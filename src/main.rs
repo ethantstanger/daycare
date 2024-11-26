@@ -1,10 +1,36 @@
 use lexer::lex;
+use lexer::Token;
+use std::env::args;
+use std::fs::File;
+use std::io::BufRead;
+use std::io::BufReader;
+use std::path::PathBuf;
+use std::str::FromStr;
 
 mod errors;
 mod lexer;
 
+const PATH_SUFFIX: &str = ".dc";
+
 fn main() {
-    println!("{:?}", lex("".to_string()));
+    let filepath = {
+        let path_string = args().filter(|x| x.ends_with(PATH_SUFFIX)).nth(0);
+
+        match path_string {
+            None => panic!("No valid filepath given"),
+            Some(x) => PathBuf::from_str(x.as_str()).unwrap(),
+        }
+    };
+
+    let file =
+        File::open(&filepath).expect(format!("Failed to open {}", filepath.display()).as_str());
+
+    let tokens: Vec<Token> = BufReader::new(file)
+        .lines()
+        .flat_map(|x| lex(x.unwrap()).unwrap())
+        .collect();
+
+    println!("{:?}", tokens);
 }
 
 /**

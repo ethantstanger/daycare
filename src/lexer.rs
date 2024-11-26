@@ -110,12 +110,9 @@ fn lex_word(peekable: &mut Peekable<Chars>) -> Result<Token, DaycareError> {
     let mut buffer = String::new();
 
     loop {
-        println!("{:?}", peekable.peek());
-
         match peekable.peek() {
             Some(it) =>
                 if it.is_alphabetic() || *it == '-' {
-                    println!("Temp: {:?}", it);
                     buffer.push(*it);
                     peekable.next();
                 } else {
@@ -186,7 +183,6 @@ fn toss_whitespace(peekable: &mut Peekable<Chars>) {
         match peekable.peek() {
             Some(it) =>
                 if it.is_whitespace() {
-                    println!("{:?}", it);
                     peekable.next();
                 } else {
                     break;
